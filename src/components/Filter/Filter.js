@@ -1,6 +1,13 @@
+import { useDispatch } from 'react-redux';
+import { filterAction } from 'store/filter/actions';
+
 import css from './Filter.module.css';
 
-const Filter = ({ handleFilter }) => {
+const Filter = () => {
+  const dispatch = useDispatch();
+  const handleFilter = e => {
+    dispatch(filterAction(e.target.value));
+  };
   return (
     <div className={css.filter}>
       <label htmlFor="filterContact">Find contacts by name</label>

@@ -1,31 +1,38 @@
-import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from 'nanoid';
+import { addContactAction } from 'store/user/actions';
 
+import Notiflix from 'notiflix';
 import css from './ContactForm.module.css';
 
-const ContactForm = props => {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+const ContactForm = () => {
+  const contacts = useSelector(state => {
+    return state.user.user;
+  });
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    props.addContact({ name, number });
-    setName('');
-    setNumber('');
+  const dispatch = useDispatch();
+
+  const addContact = contact => {
+    const isExist = contacts.some(el => el.name === contact.name);
+    if (isExist) {
+      Notiflix.Notify.failure(`${contact.name} is already in contacts`);
+      return;
+    }
+    const newContact = {
+      ...contact,
+      id: nanoid(),
+    };
+    dispatch(addContactAction(newContact));
+    Notiflix.Notify.success(`${newContact.name} has been added!`);
   };
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'number':
-        setNumber(value);
-        break;
-      default:
-        break;
-    }
+  const handleSubmit = e => {
+    const form = e.target;
+    const name = form.elements.name.value;
+    const number = form.elements.number.value;
+    e.preventDefault();
+    addContact({ name, number });
+    form.reset();
   };
 
   return (
@@ -37,8 +44,6 @@ const ContactForm = props => {
           name="name"
           type="text"
           id="inputName"
-          onChange={handleChange}
-          value={name}
           required
           pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           placeholder="Name"
@@ -51,8 +56,6 @@ const ContactForm = props => {
           name="number"
           type="tel"
           id="inputPhone"
-          onChange={handleChange}
-          value={number}
           required
           pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
           placeholder="Number"
