@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteContactAction } from 'store/user/actions';
+import { useEffect } from 'react';
 
 import Notiflix from 'notiflix';
 import css from './ContactList.module.css';
@@ -7,6 +8,10 @@ import css from './ContactList.module.css';
 const ContactList = () => {
   const contacts = useSelector(state => state.user.user);
   const { filter } = useSelector(state => state.filter);
+
+  useEffect(() => {
+    localStorage.setItem('contactsData', JSON.stringify(contacts));
+  }, [contacts]);
 
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
