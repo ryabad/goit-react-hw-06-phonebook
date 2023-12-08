@@ -1,12 +1,12 @@
 import { useDispatch } from 'react-redux';
-import { filterAction } from 'store/filter/actions';
+import { filterS } from 'store/filter/filterSlice';
 
 import css from './Filter.module.css';
 
 const Filter = () => {
   const dispatch = useDispatch();
   const handleFilter = e => {
-    dispatch(filterAction(e.target.value));
+    dispatch(filterS(e.target.value));
   };
   return (
     <div className={css.filter}>

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContactAction } from 'store/user/actions';
-import { useEffect } from 'react';
+
+import { deleteContact } from 'store/user/userSlice';
 
 import Notiflix from 'notiflix';
 import css from './ContactList.module.css';
@@ -9,19 +9,15 @@ const ContactList = () => {
   const contacts = useSelector(state => state.user.user);
   const { filter } = useSelector(state => state.filter);
 
-  useEffect(() => {
-    localStorage.setItem('contactsData', JSON.stringify(contacts));
-  }, [contacts]);
+  const dispatch = useDispatch();
 
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
 
-  const dispatch = useDispatch();
-
-  const deleteContact = id => {
+  const deletingContact = id => {
     const deletedContact = contacts.find(el => el.id === id);
-    dispatch(deleteContactAction(id));
+    dispatch(deleteContact(id));
     Notiflix.Notify.info(`${deletedContact.name} was deleted!`);
   };
   return (
@@ -32,7 +28,7 @@ const ContactList = () => {
             {el.name}: {el.number}
           </p>
           <button
-            onClick={() => deleteContact(el.id)}
+            onClick={() => deletingContact(el.id)}
             className={css.deleteBtn}
           >
             Delete

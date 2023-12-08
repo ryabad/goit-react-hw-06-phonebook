@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'store/user/userSlice';
 import { nanoid } from 'nanoid';
-import { addContactAction } from 'store/user/actions';
 
 import Notiflix from 'notiflix';
 import css from './ContactForm.module.css';
@@ -12,7 +12,7 @@ const ContactForm = () => {
 
   const dispatch = useDispatch();
 
-  const addContact = contact => {
+  const addingContact = contact => {
     const isExist = contacts.some(el => el.name === contact.name);
     if (isExist) {
       Notiflix.Notify.failure(`${contact.name} is already in contacts`);
@@ -22,7 +22,7 @@ const ContactForm = () => {
       ...contact,
       id: nanoid(),
     };
-    dispatch(addContactAction(newContact));
+    dispatch(addContact(newContact));
     Notiflix.Notify.success(`${newContact.name} has been added!`);
   };
 
@@ -31,7 +31,7 @@ const ContactForm = () => {
     const name = form.elements.name.value;
     const number = form.elements.number.value;
     e.preventDefault();
-    addContact({ name, number });
+    addingContact({ name, number });
     form.reset();
   };
 
